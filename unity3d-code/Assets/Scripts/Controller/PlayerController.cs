@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     #region 数据定义
     private bool p_isJumping = false;
     private float p_jumpForce = 3;
-    private float p_moveSpeed = 1.0f;
+    private float p_moveSpeed = 0.3f;
     private Vector3 p_movDir = new Vector3();
     private Rigidbody p_rb;
     private float p_movX, p_movZ;
