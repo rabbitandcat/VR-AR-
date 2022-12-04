@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,16 +6,19 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    #region  ˝æ›∂®“Â
+    #region Â£∞ÊòéÂèòÈáè
     private bool p_isJumping = false;
-    private float p_jumpForce = 3;
-    private float p_moveSpeed = 0.3f;
+    private float p_jumpForce = 3f;
+    private float p_moveSpeed = 30;
     private Vector3 p_movDir = new Vector3();
     private Rigidbody p_rb;
     private float p_movX, p_movZ;
     private float mouseX, mouseY;
     private float p_rotaSpeed=200;
     public Camera mainCamera;
+    bool isGrounded() {
+        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+    }
     #endregion
 
     private void Start()
@@ -25,38 +28,47 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Move();
-        Jump();
+        Movement();
         Rotate();
     }
 
-    #region “∆∂Ø
-    private void Move()
+    #region ÁßªÂä®Ë∑≥Ë∑É
+    private void Movement()
     {
         p_movX = Input.GetAxisRaw("Horizontal");
         p_movZ = Input.GetAxisRaw("Vertical");
         p_movDir.Normalize();
-        transform.position += new Vector3(p_movX, 0.0f, p_movZ) * p_moveSpeed;
-        transform.Translate(p_movDir * p_moveSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.W))
+        {
+            p_movDir = transform.forward;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            p_movDir = -transform.forward;
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            p_movDir = -transform.right;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            p_movDir = transform.right;
+        }
+        else
+        {
+            p_movDir = Vector3.zero;
+        }
+        p_rb.MovePosition(transform.position + p_movDir * p_moveSpeed * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        {
+        // Debug.Log(isGrounded());
+        Debug.Log("Ëß¶Âèë‰∫ÜÂÆùË¥ù");
+            p_rb.AddForce(Vector3.up * p_jumpForce, ForceMode.Impulse);
+        }
     }
     #endregion
 
-    #region Ã¯‘æ
-    private void Jump()
-    {
-        if (Input.GetButton("Jump") && p_isJumping == false)
-        {
-            p_isJumping = true;
-            p_rb.velocity += Vector3.up * p_jumpForce;
-        }
-        if (this.transform.position.y == 1.5)
-        {
-            p_isJumping = false;
-        }
-    }
-    #endregion
-
-    #region  ”Ω«“∆∂Ø
+    #region ÊóãËΩ¨
     private void Rotate()
     {
         mouseX = Input.GetAxis("Mouse X");
