@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     #region 声明变量
     private bool p_isJumping = false;
-    private float p_jumpForce = 3f;
+    private float p_jumpForce = 8f;
     private float p_moveSpeed = 30;
     private Vector3 p_movDir = new Vector3();
     private Rigidbody p_rb;
@@ -28,12 +28,13 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Movement();
+        Move();
+        Jump();
         Rotate();
     }
 
-    #region 移动跳跃
-    private void Movement()
+    #region 移动
+    private void Move()
     {
         p_movX = Input.GetAxisRaw("Horizontal");
         p_movZ = Input.GetAxisRaw("Vertical");
@@ -59,14 +60,18 @@ public class PlayerController : MonoBehaviour
             p_movDir = Vector3.zero;
         }
         p_rb.MovePosition(transform.position + p_movDir * p_moveSpeed * Time.deltaTime);
+    }
+    #endregion
+
+    #region 跳跃
+    private void Jump() {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
-        // Debug.Log(isGrounded());
-        Debug.Log("触发了宝贝");
-            p_rb.AddForce(Vector3.up * p_jumpForce, ForceMode.Impulse);
+            p_rb.velocity += Vector3.up * p_jumpForce;
         }
     }
     #endregion
+
 
     #region 旋转
     private void Rotate()
